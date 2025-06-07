@@ -1,6 +1,7 @@
 import pickle
 import json
 
+
 ## Data that can be managed by a Vault
 ## Every class stored in a Vault needs to inherit Datatype and implement `_dump` and `_load`
 class Datatype:
@@ -9,6 +10,7 @@ class Datatype:
 
     def _load(raw: bytes) -> Datatype:
         pass
+
 
 ## Datatype wrapper for using pickle on generic objects
 ## NOTE Data under this format might be insecure
@@ -22,6 +24,7 @@ class PickleDatatype(Datatype):
 
     def _load(raw: bytes) -> PickleDatatype:
         return PickleDatatype(pickle.loads(raw))
+
 
 ## Datatype wrapper for using JSON on generic objects
 class JsonDatatype(Datatype):

@@ -2,6 +2,7 @@ from typing import Optional
 from .datatype import Datatype
 import copy
 
+
 ## Ticket given in order to access data managed by a Cache
 class Ticket:
     def __init__(self, cache: Cache, data_id: int):
@@ -44,6 +45,7 @@ class Ticket:
         self.edited = True
         return self.cache.cached_data[data_id]
 
+
 ## In-memory cache for a specific Datatype
 class Cache:
     def __init__(self, cached_type: type, max_cached: int):
@@ -62,7 +64,7 @@ class Cache:
         # Removes all cached data without any Ticket
         data_with_tickets = list(self.tickets.keys())
         for cached in self.cached_data:
-            if !(cached in data_with_tickets):
+            if cached not in data_with_tickets:
                 self.cached.pop(cached)
 
     ## Deallocate in-memory cache if the amount of elements is greater than `max_cached`
@@ -72,7 +74,7 @@ class Cache:
             self.reset()
 
     def deactivate_ticket(self, ticket: Ticket):
-        pass # TODO
+        pass  # TODO
 
 
 ## Data structure for aligning Datatypes and their respective Cache
