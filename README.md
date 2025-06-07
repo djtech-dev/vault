@@ -22,6 +22,8 @@ Additionally, the `datatypes/` directory contains example wrappers for using Pyt
 
 (todo)
 
+![Diagram for showing the core in-memory cache for accessing data](https://github.com/djtech-dev/vault/blob/fe1bf1beffe63cf73cb1e049c6383c0a762f2aa8/.readme_assets/system_architecture_1.png)
+
 ## III. Milestones
 
 A main issue with Vault is the absence of ways to scale Vaults across multiple servers: those issue will be solved with Vault 2.0, which will introduce *Scalable Storage*, *Disk Caching* and *Data Streaming*.
