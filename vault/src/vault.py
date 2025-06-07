@@ -1,3 +1,5 @@
+from typing import Optional
+
 def index_files(directory: str) -> [int]:
     # List JSON files in a directory
     contents = os.listdir(directory)
@@ -72,21 +74,27 @@ class Vault:
         return os.path.isfile(file_name)
 
     ## Load data from disk
-    def _load(self, data_type: str, data_id: int) -> any:
+    def _load(self, data_type: type, data_id: int) -> Optional[Datatype]:
+        datatype_name = data_type.__name__
         if _exists(data_type, data_id):
-            file_name = "{0}/{1}/{2}.vault".format(self.directory, data_type, data_id)
-            # TODO
+            file_name = "{0}/{1}/{2}.vault".format(self.directory, datatype_name, data_id)
+            file_obj = open(file_name, 'rb')
+            data = data_type._load(file_obj) # using Datatype methods
+            return data
+            # TODO add cache support
         else:
             return None
 
     ## Store data to disk
-    def _store(self, data_type: str, data: any) -> int:
-        file_name = "{0}/{1}/{2}.vault".format(self.directory, data_type, data_id)
+    def _store(self, data_type: type, data: Datatype) -> int:
+        datatype_name = data_type.__name__
+        file_name = "{0}/{1}/{2}.vault".format(self.directory, datatype_name, data_id)
         # TODO
 
     ## Update disk version of modified data
-    def _update(self, data_type: str, data_id: int, data: any):
-        file_name = "{0}/{1}/{2}.vault".format(self.directory, data_type, data_id)
+    def _update(self, data_type: type, data_id: int, data: Datatype):
+        datatype_name = data_type.__name__
+        file_name = "{0}/{1}/{2}.vault".format(self.directory, datatype_name, data_id)
         # TODO
 
     ## Routine operation to manage in-memory cache
@@ -102,3 +110,13 @@ class Vault:
             # Clean up cached elements, considering the max_cached values
             for cache in caches:
                 cache.upkeep()
+
+    # Load a Datatype and obtain a Ticket that can be used to access this data.
+    # This is the core function to work with the data archived
+    def load(self, data_type: type, data_id: int) -> Optional[Ticket]:
+        pass
+
+    # Store a Datatype and obtain an ID that can be used in the future to access this data.
+    # This is the core function to archive data
+    def store(self, data_type: type, data: Datatype) -> int:
+        pass

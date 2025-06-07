@@ -4,7 +4,7 @@
 
 It enables developers to manage any Python object (given a proper `Datatype` implementation), store them locally or remotely, organize them by type, and access them efficiently using an in-memory cache, all this with just a few lines of code.  
 
-Vault has only two dependencies (`psutil` and `requests`, which is optional), and will support non-blocking I/O operations.
+Vault has only two dependencies (`psutil` and `requests`, which is optional), encourages memory usage monitoring, and will support non-blocking I/O operations.
 
 ## I. Project Structure
 
