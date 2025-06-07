@@ -12,6 +12,12 @@ def index_files(directory: str) -> [int]:
 
     return ids
 
+## Get amount of RAM used by the current process in MBs
+## Thanks to https://stackoverflow.com/questions/938733/total-memory-used-by-python-process
+def get_memory_used() -> int:
+    proc = psutil.Process()
+    return proc.memory_info().rss / 1024 ** 2
+
 ## Data structure for aligning Datatypes and their respective max_cached_values
 class Structure:
     def __init__(self):
