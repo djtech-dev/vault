@@ -1,24 +1,40 @@
 # Vault
-**Vault** is a flexible data/file storage, retrieval and caching system for Python applications.  
-It allows developers to take any Python object (with the correct `Datatype` implementation), store them as files (in local or remote), organize them by type, access them using the in-memory cache system, and update the saved files with just a couple of modules.  
-Also, Vault is an extremely light library, having only one dependency (`psutil`).  
 
-The project is split into two libraries:  
-- `vault` ~ The file storage system itself; this library also implemented a middleware for accessing remote Vaults using the Vault API.  
-- `vault-fastapi` ~ Library for building with ease custom servers exposing the Vault API.      
+**Vault** is a flexible and lightweight data/file storage, retrieval, and caching system for Python applications.  
 
-The project also has two examples, one for a contained use-case (project where Vault runs in the same Python process as the application) and one for a remote use-case (project where Vault runs on a separate server).  
-The project also has a directory (`datatypes`) contaning small code snippets for data wrappers, which allows to use Python classes from other libraries directly from Vault.  
+It enables developers to manage any Python object (given a proper `Datatype` implementation), store them locally or remotely, organize them by type, and access them efficiently using an in-memory cache, all this with just a few lines of code.  
 
-## I. Architecture
+Vault has only two dependencies (`psutil` and `requests`, which is optional), and will support non-blocking I/O operations.
 
+---
 
+## I. Project Structure
 
-## II. Milestones
+Vault is split into two libraries:
 
-The main issues of Vault is the fact that there aren't any scalability functions: we are planning to first get feedback on Vault 1.0, improving the design and fixing bugs, and then we are going to work on Vault 2.0, which will introduce *Scalable Storage*, *Disk Cache* and *Data Streaming*, in order to allow users to develop large-scale applications.  
-We warn you that Vault 2.0 will probably be a breaking update, as the design of the library might change (changes will be decided before the start of the 2.0 development cycle) in order to allow large-scale applications.  
+- **`vault`** – Core file storage and caching library. Also includes middleware for interacting with remote Vaults via the Vault API.
+- **`vault-fastapi`** – Simplifies building custom FastAPI servers that expose Vault storage over the network.
 
-## III. Vault API 
+There are also two usage examples: one for local use-cases where Vault is used within the same Python process, and one for remote use-cases where Vault is run on a separate machine.  
 
-Check `VAULT_API.md` for the standardized specification for Vault API 1.0  
+Additionally, the `datatypes/` directory contains example wrappers for using Python types from common libraries with Vault.
+
+---
+
+## II. Architecture
+
+---
+
+## III. Milestones
+
+A main issue with Vault is the absence of ways to scale Vaults across multiple servers: those issue will be solved with Vault 2.0, which will introduce *Scalable Storage*, *Disk Caching* and *Data Streaming*.
+
+These changes are intended to support large-scale applications and will likely require breaking changes; we are planning to recieve feedback and fix bugs during the 1.0 development cycle in order to have a stable base to build upon, before starting the 2.0 development cycle.
+
+Before that, a key improvement planned for 1.x is support for *non-blocking data operations**, either through async-compatible methods for the already implement classes or async-specific variants of existing classes.
+
+---
+
+## IV. Vault API
+
+The Remote API specification for Vault 1.0 is available in [`VAULT_API.md`](./VAULT_API.md).
