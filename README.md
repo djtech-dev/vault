@@ -6,24 +6,21 @@ It enables developers to manage any Python object (given a proper `Datatype` imp
 
 Vault has only two dependencies (`psutil` and `requests`, which is optional), and will support non-blocking I/O operations.
 
----
-
 ## I. Project Structure
 
 Vault is split into two libraries:
 
-- **`vault`** – Core file storage and caching library. Also includes middleware for interacting with remote Vaults via the Vault API.
-- **`vault-fastapi`** – Simplifies building custom FastAPI servers that expose Vault storage over the network.
+- **`vault`** – Core data storage library, which also includes the ability to connect to remote Vaults.
+- **`vault-fastapi`** – Library for building custom servers that expose Vault storage over the network.
 
 There are also two usage examples: one for local use-cases where Vault is used within the same Python process, and one for remote use-cases where Vault is run on a separate machine.  
 
 Additionally, the `datatypes/` directory contains example wrappers for using Python types from common libraries with Vault.
 
----
 
 ## II. Architecture
 
----
+(todo)
 
 ## III. Milestones
 
@@ -33,7 +30,6 @@ These changes are intended to support large-scale applications and will likely r
 
 Before that, a key improvement planned for 1.x is support for *non-blocking data operations**, either through async-compatible methods for the already implement classes or async-specific variants of existing classes.
 
----
 
 ## IV. Vault API
 
