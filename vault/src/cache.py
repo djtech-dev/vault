@@ -71,6 +71,9 @@ class Cache:
         if len(self.cached_data.keys()) > self.max_cached and self.max_cached != 0:
             self.reset()
 
+    def deactivate_ticket(self, ticket: Ticket):
+        pass # TODO
+
 
 ## Data structure for aligning Datatypes and their respective Cache
 class CacheCollector:
