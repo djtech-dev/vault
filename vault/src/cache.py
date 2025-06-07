@@ -1,5 +1,6 @@
 from .datatype import Datatype
 
+
 ## In-memory cache for a specific Datatype
 class Cache:
     def __init__(self, cached_type: type, max_cached: int):
@@ -10,12 +11,13 @@ class Cache:
 
     ## Deallocate in-memory cache
     def reset(self):
-        pass # TODO
+        pass  # TODO
 
     ## Deallocate in-memory cache if the amount of elements is greater than `max_cached`
     def upkeep(self):
         if len(self.cached_data.keys()) > self.max_cached:
             self.reset()
+
 
 ## Data structure for aligning Datatypes and their respective Cache
 class CacheCollector:
@@ -28,12 +30,12 @@ class CacheCollector:
 
     def insert(self, datatype: type, cache: Cache):
         # We need to this to check if the given type actually inherits from Datatype
-        assert(datatype.type == Datatype)
-        assert(len(self.datatypes) == len(self.caches))
+        assert datatype.type == Datatype
+        assert len(self.datatypes) == len(self.caches)
 
         self.datatypes.append(datatype)
         self.caches.append(cache)
 
     def iter_index(self) -> range:
-        assert(len(self.datatypes) == len(self.caches))
+        assert len(self.datatypes) == len(self.caches)
         return range(0, len(self.datatypes))
