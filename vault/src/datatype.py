@@ -11,14 +11,17 @@ class Datatype:
     def _load(raw: bytes) -> Datatype:
         pass
 
+## Wrapper for data that can be managed by a Vault.
+## This is useful if your code isn't implementing the original class so it can't add more methods
+class Wrapper:
+    def __init__(self, data: any):
+        self.data = data
+
 
 ## Datatype wrapper for using pickle on generic objects
 ## NOTE Data under this format might be insecure
 ## NOTE See https://docs.python.org/3/library/pickle.html#comparison-with-json
-class PickleWrapper(Datatype):
-    def __init__(self, data: any):
-        self.data = data
-
+class PickleWrapper(Wrapper):
     def _dump(self) -> bytes:
         return pickle.dumps(self.data)
 
@@ -26,10 +29,7 @@ class PickleWrapper(Datatype):
         return PickleWrapper(pickle.loads(raw))
 
 ## Datatype wrapper for using JSON on generic objects
-class JsonWrapper(Datatype):
-    def __init__(self, data: any):
-        self.data = data
-
+class JsonWrapper(Wrapper):
     def _dump(self) -> bytes:
         return json.dumps(self.data)
 
@@ -46,7 +46,7 @@ class PickleDatatype(Datatype):
     def _load(raw: bytes) -> PickleDatatype:
         return PickleDatatype(pickle.loads(raw))
 
-## Datatype class for using JSON on custom classes; those classes need to inherit PickleDatatype
+## Datatype class for using JSON on custom classes; those classes need to inherit JsonDatatype
 class JsonDatatype(Datatype):
     def _dump(self) -> bytes:
         return json.dumps(self)
