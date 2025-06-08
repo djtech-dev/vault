@@ -70,12 +70,9 @@ class Vault:
 
     ## Load data from disk; it will return a Ticket usable to work with the in-memory version of the data
     def load(self, unit_name: str, data_id: int) -> Optional[Ticket]:
-        if exists(unit_name, data_id):
-            file_name = "{0}/{1}/{2}.vault".format(self.directory, unit_name, data_id)
-            file_obj = open(file_name, "rb")
-            data = data_type._load(file_obj.read())  # using Datatype methods
-            return data
-            # TODO add cache support
+        if self.exists(unit_name, data_id):
+            cache = self.caches[unit_name]
+            return cache._load(self.directory, unit_name, data_id)
         else:
             return None
 

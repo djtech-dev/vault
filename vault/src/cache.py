@@ -5,10 +5,11 @@ import copy
 
 ## Ticket given in order to access data managed by a Cache
 class Ticket:
-    def __init__(self, cache: Cache, data_id: int):
+    def __init__(self, cache: Cache, data_id: int, ticket_id: int):
         self.cache: Cache = cache
         self.data_id: int = data_id
         self.edited: bool = False
+        self.ticket_id: int = ticket_id
 
     ## Run this method when you don't need to use this Ticket anymore.
     ## If you don't deactivate a ticket, it won't be deallocated from memory.
@@ -57,6 +58,22 @@ class Cache:
         self.updated_data: list[int] = []
         # List of Tickets assigned to an element
         self.tickets = dict[int, list[Ticket]] = {}
+        self.current_ticket_id: int = 0
+
+    def _load(self, directory: str, unit_name: str, data_id: str) -> Ticket:
+        # If data isn't loaded in memory, load it now
+        if data_id not in self.cached_data.keys():
+            file_name = "{0}/{1}/{2}.vault".format(self.directory, unit_name, data_id)
+            file_obj = open(file_name, "rb")
+            data: Datatype = data_type._load(file_obj.read())  # using Datatype methods
+            self.cached_data[data_id] = data
+
+        # Create Ticket and register it as open
+        ticket: Ticket = Ticket(self, data_id, self.current_ticket_id)
+        open_tickets = self.tickets[data_id]
+        open_tickets.append(ticket)
+        self.current_ticket_id += 1
+        return ticket
 
     ## Deallocate in-memory cache
     def reset(self):
