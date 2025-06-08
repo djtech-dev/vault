@@ -10,6 +10,7 @@ class Ticket:
         self.data_id: int = data_id
         self.edited: bool = False
         self.ticket_id: int = ticket_id
+        self.auto_deactivate: bool = True
 
     ## Run this method when you don't need to use this Ticket anymore.
     ## If you don't deactivate a ticket, it won't be deallocated from memory.
@@ -19,6 +20,10 @@ class Ticket:
 
         # Delete reference to object
         del self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if not self.auto_deactivate:
+            self.deactivate()
 
     ## Get the underlaying element.
     ## NOTE Run this if you are interested in reading the data
