@@ -7,6 +7,8 @@ import time
 import psutil
 import random
 
+import logging
+logger = logging.getLogger('vault/vault')
 
 def index_files(directory: str) -> [int]:
     # List Vault-managed files in a directory
@@ -94,6 +96,8 @@ class Vault:
         with open(file_name, "wb+") as file_obj:
             file_obj.write(data._dump())
 
+        logger.info('New {0} element created on Vault'.format(unit_name))
+
         return data_id
 
     ## Store new data to disk; it will create a new file and return its ID and an open Ticket
@@ -112,9 +116,11 @@ class Vault:
     def _upkeep(self):
         # Extract all Cache objects from the CacheCollector data structure
         caches = self.caches.caches
+        memory_used = get_memory_used()
 
-        if get_memory_used() > self.max_memory_used:
+        if memory_used > self.max_memory_used:
             # Reset all in-memory caches
+            logger.warn('Excessive memory usage ({0}/{1}), cleaning up caches.'.format(memory_used, self.max_memory_used))
             for cache in caches:
                 cache.reset()
         else:

@@ -2,6 +2,8 @@ from typing import Optional
 from .datatype import Datatype
 import copy
 
+import logging
+logger = logging.getLogger('vault/cache')
 
 ## Ticket given in order to access data managed by a Cache
 class Ticket:
@@ -77,6 +79,7 @@ class Cache:
         open_tickets = self.tickets[data_id]
         open_tickets.append(ticket)
         self.current_ticket_id += 1
+        logger.info('Element loaded on {0} cache.'.format(self.unit_name))
         return ticket
 
     ## Deallocate in-memory cache
@@ -86,6 +89,7 @@ class Cache:
         for cached in self.cached_data.keys():
             if cached not in data_with_tickets:
                 self.cached.pop(cached)
+                logger.info('Element uncached on {0} cache.'.format(self.unit_name))
 
     ## Deallocate in-memory cache if needed
     def upkeep(self):
@@ -101,4 +105,9 @@ class Cache:
         open_tickets = self.tickets[data_id]
         open_tickets.remove(ticket)
 
+        # DO NOT RUN `self.upkeep()`, it's too slow to do every ticket deactivation
+        # Let `Vault._upkeep()` handle all memory upkeeping tasks
+
         del ticket
+
+        logger.info('Ticket deactivated on {0} cache.'.format(self.unit_name))
