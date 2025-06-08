@@ -91,5 +91,10 @@ class Cache:
 
     def deactivate_ticket(self, ticket: Ticket):
         # Update files
+        # TODO
+
         # Remove ticket
-        pass  # TODO
+        open_tickets = self.tickets[data_id]
+        open_tickets.remove(ticket)
+
+        del ticket
