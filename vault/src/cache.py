@@ -35,14 +35,13 @@ class Ticket:
     ## NOTE Not all Datatypes might support cloning
     def get_clone(self) -> Optional[Datatype]:
         try:
-            # Try deep-copying
+            # Tries deep-copying
             return copy.deepcopy(self.cache.cached_data[self.data_id])
-        except:
+        except (TypeError, AttributeError) as e:
             try:
-                # Try shallow-copying
+                # Tries shallow-copying
                 return copy.copy(self.cache.cached_data[self.data_id])
-            except:
-                # Datatype impossible to clone
+            except (TypeError, AttributeError):
                 return None
 
     ## Get the underlaying element.

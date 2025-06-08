@@ -7,6 +7,7 @@ import time
 import psutil
 import random
 
+
 def index_files(directory: str) -> [int]:
     # List Vault-managed files in a directory
     contents = os.listdir(directory)
@@ -84,7 +85,7 @@ class Vault:
         # Generate a random data_id
         data_id = 0
         while True:
-            data_id = random.randrange(0,10000000000)
+            data_id = random.randrange(0, 10000000000)
             if not self.exists(unit_name, data_id):
                 break
 
