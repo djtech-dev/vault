@@ -1,6 +1,6 @@
 from typing import Optional
 from .datatype import Datatype
-from .cache import Cache
+from .cache import Cache, Ticket
 import threading
 
 
@@ -64,13 +64,13 @@ class Vault:
         pass  # TODO
 
     ## Check if data exists
-    def _exists(self, unit_name: str, data_id: int) -> bool:
+    def exists(self, unit_name: str, data_id: int) -> bool:
         file_name = "{0}/{1}/{2}.vault".format(self.directory, unit_name, data_id)
         return os.path.isfile(file_name)
 
     ## Load data from disk
-    def _load(self, unit_name: str, data_id: int) -> Optional[Datatype]:
-        if _exists(unit_name, data_id):
+    def load(self, unit_name: str, data_id: int) -> Optional[Ticket]:
+        if exists(unit_name, data_id):
             file_name = "{0}/{1}/{2}.vault".format(self.directory, unit_name, data_id)
             file_obj = open(file_name, "rb")
             data = data_type._load(file_obj.read())  # using Datatype methods
@@ -79,15 +79,27 @@ class Vault:
         else:
             return None
 
-    ## Store data to disk
-    def _store(self, unit_name: str, data: Datatype) -> int:
+    ## Store new data to disk; it will create a new file and return its ID
+    def create(self, unit_name: str, data: Datatype) -> int:
+        # Generate a random data_id
+        data_id = 0
+        while True:
+            data_id = random.randrange(0,10000000000)
+            if not self.exists(unit_name, data_id):
+                break
+
+        # Write to file
         file_name = "{0}/{1}/{2}.vault".format(self.directory, unit_name, data_id)
-        # TODO
+        with open(file_name, "wb+") as file_obj:
+            file_obj.write(data._dump())
+
+        return data_id
 
     ## Update disk version of modified data
     def _update(self, unit_name: str, data_id: int, data: Datatype):
         file_name = "{0}/{1}/{2}.vault".format(self.directory, unit_name, data_id)
-        # TODO
+        with open(file_name, "wb+") as file_obj:
+            file_obj.write(data._dump())
 
     ## Routine operation to manage in-memory cache
     def _upkeep(self):
@@ -112,16 +124,6 @@ class Vault:
         t = threading.Thread(target=_upkeep_timer, args=(self, timer))
         t.start()
         return t
-
-    # Load a Datatype and obtain a Ticket that can be used to access this data.
-    # This is the core function to work with the data archived
-    def load(self, unit_name: str, data_id: int) -> Optional[Ticket]:
-        pass
-
-    # Store a Datatype and obtain an ID that can be used in the future to access this data.
-    # This is the core function to archive data
-    def store(self, unit_name: str, data: Datatype) -> int:
-        pass
 
     # Get Datatype of a specific Vault's Unit (= managed subdirectory)
     def get_datatype(self, unit_name: str) -> type:
