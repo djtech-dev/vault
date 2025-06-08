@@ -3,7 +3,9 @@ from .datatype import Datatype
 import copy
 
 import logging
-logger = logging.getLogger('vault/cache')
+
+logger = logging.getLogger("vault/cache")
+
 
 ## Ticket given in order to access data managed by a Cache
 class Ticket:
@@ -24,7 +26,7 @@ class Ticket:
         del self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        if not self.auto_deactivate:
+        if self.auto_deactivate:
             self.deactivate()
 
     ## Get the underlaying element.
@@ -79,17 +81,17 @@ class Cache:
         open_tickets = self.tickets[data_id]
         open_tickets.append(ticket)
         self.current_ticket_id += 1
-        logger.info('Element loaded on {0} cache.'.format(self.unit_name))
+        logger.info("Element loaded on {0} cache.".format(self.unit_name))
         return ticket
 
     ## Deallocate in-memory cache
     def reset(self):
         # Removes all cached data without any Ticket
         data_with_tickets = list(self.tickets.keys())
-        for cached in self.cached_data.keys():
+        for cached in list(self.cached_data.keys()):
             if cached not in data_with_tickets:
-                self.cached.pop(cached)
-                logger.info('Element uncached on {0} cache.'.format(self.unit_name))
+                self.cached_data.pop(cached)
+                logger.info("Element uncached on {0} cache.".format(self.unit_name))
 
     ## Deallocate in-memory cache if needed
     def upkeep(self):
@@ -102,12 +104,16 @@ class Cache:
         # TODO
 
         # Remove ticket
-        open_tickets = self.tickets[data_id]
+        open_tickets = self.tickets[ticket.data_id]
         open_tickets.remove(ticket)
+
+        # Clear self.tickets if there are datas with 0 open tickets
+        if not self.tickets[ticket.data_id]:
+            del self.tickets[ticket.data_id]
 
         # DO NOT RUN `self.upkeep()`, it's too slow to do every ticket deactivation
         # Let `Vault._upkeep()` handle all memory upkeeping tasks
 
         del ticket
 
-        logger.info('Ticket deactivated on {0} cache.'.format(self.unit_name))
+        logger.info("Ticket deactivated on {0} cache.".format(self.unit_name))

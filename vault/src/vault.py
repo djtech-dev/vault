@@ -8,9 +8,11 @@ import psutil
 import random
 
 import logging
-logger = logging.getLogger('vault/vault')
 
-def index_files(directory: str) -> [int]:
+logger = logging.getLogger("vault/vault")
+
+
+def index_files(directory: str) -> list[int]:
     # List Vault-managed files in a directory
     contents = os.listdir(directory)
     files = [
@@ -96,7 +98,7 @@ class Vault:
         with open(file_name, "wb+") as file_obj:
             file_obj.write(data._dump())
 
-        logger.info('New {0} element created on Vault'.format(unit_name))
+        logger.info("New {0} element created on Vault".format(unit_name))
 
         return data_id
 
@@ -115,12 +117,16 @@ class Vault:
     ## Routine operation to manage in-memory cache
     def _upkeep(self):
         # Extract all Cache objects from the CacheCollector data structure
-        caches = self.caches.caches
+        caches = list(self.caches.values())
         memory_used = get_memory_used()
 
         if memory_used > self.max_memory_used:
             # Reset all in-memory caches
-            logger.warn('Excessive memory usage ({0}/{1}), cleaning up caches.'.format(memory_used, self.max_memory_used))
+            logger.warn(
+                "Excessive memory usage ({0}/{1}), cleaning up caches.".format(
+                    memory_used, self.max_memory_used
+                )
+            )
             for cache in caches:
                 cache.reset()
         else:
@@ -135,11 +141,10 @@ class Vault:
 
     def spawn_upkeeping_thread(self) -> threading.Thread:
         t = threading.Thread(target=_upkeep_timer, args=(self, timer))
+        t.daemon = True  # Make daemon for clean shutdown
         t.start()
         return t
 
     # Get Datatype of a specific Vault's Unit (= managed subdirectory)
     def get_datatype(self, unit_name: str) -> type:
-        el: tuple[type, Cache] = self.caches[unit_name]
-        datatype: type = el[0]
-        return datatype
+        return self.caches[unit_name].cached_type
