@@ -45,6 +45,7 @@ class Ticket:
         self.edited = True
         return self.cache.cached_data[data_id]
 
+
 ## In-memory cache for a specific Datatype
 class Cache:
     def __init__(self, unit_name: str, cached_type: type, max_cached: int):
@@ -59,8 +60,6 @@ class Cache:
 
     ## Deallocate in-memory cache
     def reset(self):
-        # TODO Disk updates
-
         # Removes all cached data without any Ticket
         data_with_tickets = list(self.tickets.keys())
         for cached in self.cached_data:
@@ -74,27 +73,6 @@ class Cache:
             self.reset()
 
     def deactivate_ticket(self, ticket: Ticket):
+        # Update files
+        # Remove ticket
         pass  # TODO
-
-'''
-## Data structure for aligning Datatypes and their respective Cache
-class CacheCollector:
-    def __init__(self):
-        # We can't use a Dictionary because we can't guarantee that Datatype is hashable
-        # NOTE Entries can only be added, not removed or moved.
-
-        self.datatypes: list[type] = []
-        self.caches: list[Cache] = []
-
-    def insert(self, datatype: type, cache: Cache):
-        # We need to this to check if the given type actually inherits from Datatype
-        assert datatype.type == Datatype
-        assert len(self.datatypes) == len(self.caches)
-
-        self.datatypes.append(datatype)
-        self.caches.append(cache)
-
-    def iter_index(self) -> range:
-        assert len(self.datatypes) == len(self.caches)
-        return range(0, len(self.datatypes))
-'''
