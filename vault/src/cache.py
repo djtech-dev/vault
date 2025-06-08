@@ -52,7 +52,7 @@ class Ticket:
     ## NOTE Run this if you are interested in editing the data
     def get_ref(self) -> Datatype:
         self.edited = True
-        return self.cache.cached_data[data_id]
+        return self.cache.cached_data[self.data_id]
 
 
 ## In-memory cache for a specific Datatype
@@ -71,13 +71,23 @@ class Cache:
     def _load(self, directory: str, unit_name: str, data_id: str) -> Ticket:
         # If data isn't loaded in memory, load it now
         if data_id not in self.cached_data.keys():
-            file_name = "{0}/{1}/{2}.vault".format(self.directory, unit_name, data_id)
-            file_obj = open(file_name, "rb")
-            data: Datatype = data_type._load(file_obj.read())  # using Datatype methods
+            file_name = "{0}/{1}/{2}.vault".format(directory, unit_name, data_id)
+
+            # Use context manager for proper file handling
+            with open(file_name, "rb") as file_obj:
+                data: Datatype = self.cached_type._load(
+                    file_obj.read()
+                )  # Fixed: use self.cached_type
+
             self.cached_data[data_id] = data
 
         # Create Ticket and register it as open
         ticket: Ticket = Ticket(self, data_id, self.current_ticket_id)
+
+        # Initialize tickets list if it doesn't exist
+        if data_id not in self.tickets:
+            self.tickets[data_id] = []
+
         open_tickets = self.tickets[data_id]
         open_tickets.append(ticket)
         self.current_ticket_id += 1

@@ -16,7 +16,7 @@ def index_files(directory: str) -> list[int]:
     # List Vault-managed files in a directory
     contents = os.listdir(directory)
     files = [
-        f for f in files if os.path.isfile(Direc + "/" + f) and f.endswith(".vault")
+        f for f in files if os.path.isfile(directory + "/" + f) and f.endswith(".vault")
     ]
 
     # Extract the numerical IDs
@@ -139,7 +139,7 @@ class Vault:
             time.sleep(time_elapsed)
             self._upkeep()
 
-    def spawn_upkeeping_thread(self) -> threading.Thread:
+    def spawn_upkeeping_thread(self, timer: int) -> threading.Thread:
         t = threading.Thread(target=_upkeep_timer, args=(self, timer))
         t.daemon = True  # Make daemon for clean shutdown
         t.start()
