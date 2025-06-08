@@ -76,7 +76,7 @@ class Cache:
     def deactivate_ticket(self, ticket: Ticket):
         pass  # TODO
 
-
+'''
 ## Data structure for aligning Datatypes and their respective Cache
 class CacheCollector:
     def __init__(self):
@@ -97,3 +97,4 @@ class CacheCollector:
     def iter_index(self) -> range:
         assert len(self.datatypes) == len(self.caches)
         return range(0, len(self.datatypes))
+'''
