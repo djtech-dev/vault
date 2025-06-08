@@ -12,8 +12,9 @@ class Ticket:
     def __init__(self, cache: Cache, data_id: int, ticket_id: int):
         self.cache: Cache = cache
         self.data_id: int = data_id
-        self.edited: bool = False
         self.ticket_id: int = ticket_id
+
+        self.edited: bool = False
         self.auto_deactivate: bool = True
 
     ## Run this method when you don't need to use this Ticket anymore.
@@ -62,9 +63,17 @@ class Cache:
         self.cached_type: type = cached_type
         self.cached_data: dict[int, cached_type] = {}
         self.max_cached: int = max_cached
+
+        # Update data on disk as soon as an editing Ticket is closed.
+        # If set to False, only one disk write operation will when all Tickets are closed.
+        # If set to True, there will be some performance overhead, but it will provide better stability (in case of error, shutdown, etc)
+        self.auto_update: bool = True
+
         # List of IDs of elements that were changed
+        # Only used if `auto_update` is set to False
         self.updated_data: list[int] = []
-        # List of Tickets assigned to an element
+
+        # Tickets assigned to an element
         self.tickets: dict[int, list[Ticket]] = {}
         self.current_ticket_id: int = 0
 
@@ -77,7 +86,7 @@ class Cache:
             with open(file_name, "rb") as file_obj:
                 data: Datatype = self.cached_type._load(
                     file_obj.read()
-                )  # Fixed: use self.cached_type
+                )
 
             self.cached_data[data_id] = data
 

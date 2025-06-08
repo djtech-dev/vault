@@ -12,7 +12,7 @@ import logging
 logger = logging.getLogger("vault/vault")
 
 
-def index_files(directory: str) -> list[int]:
+def list_vault_files(directory: str) -> list[int]:
     # List Vault-managed files in a directory
     contents = os.listdir(directory)
     files = [
@@ -51,12 +51,6 @@ class Vault:
         self.max_memory_used: int = max_memory_used
 
         # Populate caches using the given structure
-        """
-        for structure_index in structure.iter_index():
-            datatype = structure.datatypes[structure_index]
-            max_cached_value = structure.max_cached_values[structure_index]
-            self.caches[datatype] = Cache(datatype, structure[datatype])
-        """
         for unit_name in structure.keys():
             structure_value = structure[unit_name]
             datatype = structure_value[0]
@@ -66,10 +60,6 @@ class Vault:
             assert max_cached_value >= 0
 
             self.caches[unit_name] = Cache(unit_name, datatype, max_cached_value)
-
-    ## Update the Vault indexing based on the files present in the Vault's directory and subdirectories.
-    def update_from_disk(self):
-        pass  # TODO
 
     ## Check if data exists
     def exists(self, unit_name: str, data_id: int) -> bool:
