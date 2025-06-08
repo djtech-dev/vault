@@ -45,10 +45,10 @@ class Ticket:
         self.edited = True
         return self.cache.cached_data[data_id]
 
-
 ## In-memory cache for a specific Datatype
 class Cache:
-    def __init__(self, cached_type: type, max_cached: int):
+    def __init__(self, unit_name: str, cached_type: type, max_cached: int):
+        self.unit_name: str = unit_name
         self.cached_type: type = cached_type
         self.cached_data: dict[int, cached_type] = {}
         self.max_cached: int = max_cached

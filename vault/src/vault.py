@@ -75,7 +75,7 @@ class Vault:
             structure_value = structure[unit_name]
             datatype = structure_value[0]
             max_cached_value = structure_value[1]
-            self.caches[unit_name] = Cache(datatype, max_cached_value)
+            self.caches[unit_name] = Cache(unit_name, datatype, max_cached_value)
 
     ## Update the Vault indexing based on the files present in the Vault's directory and subdirectories.
     def update_from_disk(self):
@@ -130,7 +130,9 @@ class Vault:
             self._upkeep()
 
     def spawn_upkeeping_thread(self) -> threading.Thread:
-        threading.Thread(target=_upkeep_timer, args=(self, timer))
+        t = threading.Thread(target=_upkeep_timer, args=(self, timer))
+        t.start()
+        return t
 
     # Load a Datatype and obtain a Ticket that can be used to access this data.
     # This is the core function to work with the data archived
