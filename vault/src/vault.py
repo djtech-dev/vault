@@ -68,7 +68,7 @@ class Vault:
         file_name = "{0}/{1}/{2}.vault".format(self.directory, unit_name, data_id)
         return os.path.isfile(file_name)
 
-    ## Load data from disk
+    ## Load data from disk; it will return a Ticket usable to work with the in-memory version of the data
     def load(self, unit_name: str, data_id: int) -> Optional[Ticket]:
         if exists(unit_name, data_id):
             file_name = "{0}/{1}/{2}.vault".format(self.directory, unit_name, data_id)
@@ -80,7 +80,7 @@ class Vault:
             return None
 
     ## Store new data to disk; it will create a new file and return its ID
-    def create(self, unit_name: str, data: Datatype) -> int:
+    def upload(self, unit_name: str, data: Datatype) -> int:
         # Generate a random data_id
         data_id = 0
         while True:
@@ -95,7 +95,13 @@ class Vault:
 
         return data_id
 
-    ## Update disk version of modified data
+    ## Store new data to disk; it will create a new file and return its ID and an open Ticket
+    def create(self, unit_name: str, data: Datatype) -> tuple[int, Optional[Ticket]]:
+        data_id = self.upload(unit_name, data)
+        ticket = self.load(unit_name, data_id)
+        return (data_id, ticket)
+
+    ## Update disk version of specific modified data
     def _update(self, unit_name: str, data_id: int, data: Datatype):
         file_name = "{0}/{1}/{2}.vault".format(self.directory, unit_name, data_id)
         with open(file_name, "wb+") as file_obj:
