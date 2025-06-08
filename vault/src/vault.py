@@ -2,7 +2,10 @@ from typing import Optional
 from .datatype import Datatype
 from .cache import Cache, Ticket
 import threading
-
+import os
+import time
+import psutil
+import random
 
 def index_files(directory: str) -> [int]:
     # List Vault-managed files in a directory
@@ -54,7 +57,7 @@ class Vault:
             datatype = structure_value[0]
             max_cached_value = structure_value[1]
 
-            assert datatype == Datatype
+            assert issubclass(datatype, Datatype)
             assert max_cached_value >= 0
 
             self.caches[unit_name] = Cache(unit_name, datatype, max_cached_value)

@@ -23,7 +23,7 @@ class Ticket:
     ## Get the underlaying element.
     ## NOTE Run this if you are interested in reading the data
     def get_data(self) -> Datatype:
-        return self.cache.cached_data[data_id]
+        return self.cache.cached_data[self.data_id]
 
     ## Get the underlaying element.
     ## NOTE Run this if you are interested in cloning the data
@@ -31,11 +31,11 @@ class Ticket:
     def get_clone(self) -> Optional[Datatype]:
         try:
             # Try deep-copying
-            return copy.deepcopy(self.cache.cached_data[data_id])
+            return copy.deepcopy(self.cache.cached_data[self.data_id])
         except:
             try:
                 # Try shallow-copying
-                return copy.copy(self.cache.cached_data[data_id])
+                return copy.copy(self.cache.cached_data[self.data_id])
             except:
                 # Datatype impossible to clone
                 return None
@@ -57,7 +57,7 @@ class Cache:
         # List of IDs of elements that were changed
         self.updated_data: list[int] = []
         # List of Tickets assigned to an element
-        self.tickets = dict[int, list[Ticket]] = {}
+        self.tickets: dict[int, list[Ticket]] = {}
         self.current_ticket_id: int = 0
 
     def _load(self, directory: str, unit_name: str, data_id: str) -> Ticket:
@@ -79,11 +79,11 @@ class Cache:
     def reset(self):
         # Removes all cached data without any Ticket
         data_with_tickets = list(self.tickets.keys())
-        for cached in self.cached_data:
+        for cached in self.cached_data.keys():
             if cached not in data_with_tickets:
                 self.cached.pop(cached)
 
-    ## Deallocate in-memory cache if the amount of elements is greater than `max_cached`
+    ## Deallocate in-memory cache if needed
     def upkeep(self):
         # If max_cached is equal to 0, limitations of amount of elements can't be applied
         if len(self.cached_data.keys()) > self.max_cached and self.max_cached != 0:
