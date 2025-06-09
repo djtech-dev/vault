@@ -1,0 +1,41 @@
+name: Build and Publish vault-client to PyPI
+
+on:
+  push:
+    tags:
+      - 'v*'  # Triggers on version tags like v1.0.0
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install build tool
+        run: |
+          cd vault
+          python3 -m pip install --upgrade build
+
+      - name: Build package
+        run: |
+          cd vault
+          python3 -m build
+
+      - name: Upload dist artifacts to GitHub
+        uses: actions/upload-artifact@v4
+        with:
+          name: vault-dist
+          path: vault/dist/*
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          packages-dir: vault/dist/
