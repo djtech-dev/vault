@@ -5,7 +5,7 @@ import threading
 import os
 import time
 import psutil
-import random
+import uuid
 
 import logging
 
@@ -81,7 +81,7 @@ class Vault:
         # Generate a random data_id
         data_id = 0
         while True:
-            data_id = random.randrange(0, 10000000000)
+            data_id = uuid.uuid4().int & ((1 << 63) - 1)
             if not self.exists(unit_name, data_id):
                 break
 
