@@ -59,7 +59,9 @@ class Vault:
             assert issubclass(datatype, Datatype)
             assert max_cached_value >= 0
 
-            self.caches[unit_name] = Cache(unit_name, datatype, max_cached_value)
+            self.caches[unit_name] = Cache(
+                unit_name, directory, datatype, max_cached_value
+            )
 
     ## Check if data exists
     def exists(self, unit_name: str, data_id: int) -> bool:

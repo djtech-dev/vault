@@ -58,11 +58,18 @@ class Ticket:
 
 ## In-memory cache for a specific Datatype
 class Cache:
-    def __init__(self, unit_name: str, cached_type: type, max_cached: int):
+    def __init__(
+        self, unit_name: str, main_directory: str, cached_type: type, max_cached: int
+    ):
         self.unit_name: str = unit_name
         self.cached_type: type = cached_type
         self.cached_data: dict[int, cached_type] = {}
+
+        # Maximum amount of cached elements
         self.max_cached: int = max_cached
+
+        # Vault's directory
+        self.directory: str = main_directory
 
         # Update data on disk as soon as an editing Ticket is closed.
         # If set to False, only one disk write operation will when all Tickets are closed.
@@ -77,16 +84,14 @@ class Cache:
         self.tickets: dict[int, list[Ticket]] = {}
         self.current_ticket_id: int = 0
 
-    def _load(self, directory: str, unit_name: str, data_id: str) -> Ticket:
+    def _load(self, unit_name: str, data_id: str) -> Ticket:
         # If data isn't loaded in memory, load it now
         if data_id not in self.cached_data.keys():
-            file_name = "{0}/{1}/{2}.vault".format(directory, unit_name, data_id)
+            file_name = "{0}/{1}/{2}.vault".format(self.directory, unit_name, data_id)
 
             # Use context manager for proper file handling
             with open(file_name, "rb") as file_obj:
-                data: Datatype = self.cached_type._load(
-                    file_obj.read()
-                )
+                data: Datatype = self.cached_type._load(file_obj.read())
 
             self.cached_data[data_id] = data
 
@@ -118,9 +123,27 @@ class Cache:
         if len(self.cached_data.keys()) > self.max_cached and self.max_cached != 0:
             self.reset()
 
+    def _update(self, data_id: int):
+        file_name = "{0}/{1}/{2}.vault".format(self.directory, self.unit_name, data_id)
+        data = self.cached_data[data_id]
+        with open(file_name, "wb+") as file_obj:
+            file_obj.write(data._dump())
+
     def deactivate_ticket(self, ticket: Ticket):
-        # Update files
-        # TODO
+        # Update files if auto-update is enabled or if this is the last edited Ticket.
+        if ticket.edited:
+            if self.auto_update:
+                self._update(ticket.data_id)
+            else:
+                # Count edited open Tickets remaining
+                edited_tickets_found: int = 0
+                for searched_ticket in self.tickets[ticket.data_id]:
+                    if searched_ticket.edited:
+                        edited_ticket_found += 1
+
+                # Update only if this is the last open edited Ticket
+                if edited_tickets_found == 1:
+                    self._update(ticket.data_id)
 
         # Remove ticket
         open_tickets = self.tickets[ticket.data_id]
