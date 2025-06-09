@@ -49,8 +49,14 @@ class FileKeeper:
         # Working directory for the DB and the Vault
         self.directory = directory
 
+        # NOTE A key-value system for string-based data retrieval will be implemented
+        #      in Vault in a future version of the 1.x branch.
+        #      For now, we'll use a dictionary for each Vault's Unit.
+        # ----------
         # The keys are the document's name, the values are the data's UUID
-        self.files: dict[str, int] = {}
+        self.documents: dict[str, int] = {}
+        # The keys are the folder's name, the values are the data's UUID
+        self.folders: dict[str, int] = {}
 
         self.vault = Vault(
             directory,             # Working directory
