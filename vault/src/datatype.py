@@ -14,7 +14,7 @@ class Datatype:
 
 ## Wrapper for data that can be managed by a Vault.
 ## This is useful if your code isn't implementing the original class so it can't add more methods
-class Wrapper:
+class Wrapper(Datatype):
     def __init__(self, data: any):
         self.data = data
 
