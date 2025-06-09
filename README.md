@@ -32,7 +32,7 @@ These changes are intended to support large-scale applications and will likely r
 
 Before that, a key improvement planned for 1.x is support for *non-blocking data operations*, either through async-compatible methods for the already implement classes or async-specific variants of existing classes.
 
-A smaller improvement that could be done for programs that use large amounts of files is adding an optional feature for keeping track of files in a separate register (most likely sqlite) in order to remove the need to list all files in the directories when the Vault is loaded.
+A smaller improvement that could be done for programs that use large amounts of files is adding an optional feature for keeping track of files in a separate register (most likely sqlite) in order to remove the need to list all files in the directories when the Vault is loaded. This additional database could also be used to add data integrity checks (checksum).
 
 ## IV. Vault API
 
