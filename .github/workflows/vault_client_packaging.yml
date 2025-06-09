@@ -18,14 +18,10 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install build tool
+      - name: Build packages
         run: |
           cd vault
           python3 -m pip install --upgrade build
-
-      - name: Build package
-        run: |
-          cd vault
           python3 -m build
 
       - name: Upload dist artifacts to GitHub
