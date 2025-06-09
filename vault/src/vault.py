@@ -14,14 +14,14 @@ logger = logging.getLogger("vault/vault")
 
 def list_vault_files(directory: str) -> list[int]:
     # List Vault-managed files in a directory
-    contents = os.listdir(directory)
-    files = [
+    files = os.listdir(directory)
+    vault_files = [
         f for f in files if os.path.isfile(directory + "/" + f) and f.endswith(".vault")
     ]
 
     # Extract the numerical IDs
     ids = []
-    for file_path in files:
+    for file_path in vault_files:
         try:
             id_string = file_path.removesuffix(".vault")
             ids.append(int(id_string))
@@ -132,7 +132,7 @@ class Vault:
             self._upkeep()
 
     def spawn_upkeeping_thread(self, timer: int) -> threading.Thread:
-        t = threading.Thread(target=_upkeep_timer, args=(self, timer))
+        t = threading.Thread(target=self._upkeep_timer, args=(self, timer))
         t.daemon = True  # Make daemon for clean shutdown
         t.start()
         return t

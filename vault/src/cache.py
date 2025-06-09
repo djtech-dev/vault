@@ -84,7 +84,7 @@ class Cache:
         self.tickets: dict[int, list[Ticket]] = {}
         self.current_ticket_id: int = 0
 
-    def _load(self, unit_name: str, data_id: str) -> Ticket:
+    def _load(self, unit_name: str, data_id: int) -> Ticket:
         # If data isn't loaded in memory, load it now
         if data_id not in self.cached_data.keys():
             file_name = "{0}/{1}/{2}.vault".format(self.directory, unit_name, data_id)
@@ -139,7 +139,7 @@ class Cache:
                 edited_tickets_found: int = 0
                 for searched_ticket in self.tickets[ticket.data_id]:
                     if searched_ticket.edited:
-                        edited_ticket_found += 1
+                        edited_tickets_found += 1
 
                 # Update only if this is the last open edited Ticket
                 if edited_tickets_found == 1:
