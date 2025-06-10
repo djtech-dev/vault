@@ -6,8 +6,8 @@ build-backend = "hatchling.build"
 packages = ["vault"]
 
 [project]
-name = "Vault"
-version = "0.1.0"
+name = "pyvault-client"
+version = "0.1.1"
 authors = [
   { name="djtech-dev", email="djtech.developer@gmail.com" },
 ]
