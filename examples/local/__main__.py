@@ -1,4 +1,4 @@
-'''
+"""
 ░█▀▀░▀█▀░█░░░█▀▀░█░█░█▀▀░█▀▀░█▀█░█▀▀░█▀▄░
 ░█▀▀░░█░░█░░░█▀▀░█▀▄░█▀▀░█▀▀░█▀▀░█▀▀░█▀▄░
 ░▀░░░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀░░░▀▀▀░▀░▀░
@@ -8,12 +8,13 @@
         Version 1 ~ 09.06.2025
          Built for Vault 1.0
       Released under MIT License
-'''
+"""
 
 from vault.vault import Vault
 from vault.cache import Cache, Ticket
 from vault.datatype import Datatype
 import json
+
 
 # Document, rappresented as a Vault-compatible class
 class Document(Datatype):
@@ -23,9 +24,10 @@ class Document(Datatype):
     def _dump(self) -> bytes:
         return self.text.encode("utf-8")
 
-    def _load(raw: bytes) -> 'Document':
-        text = str(raw, encoding='utf-8')
+    def _load(raw: bytes) -> "Document":
+        text = str(raw, encoding="utf-8")
         return Document(text)
+
 
 # Set of references of Documents, rappresented as a Vault-compatible class
 class Folder(Datatype):
@@ -35,14 +37,16 @@ class Folder(Datatype):
     def _dump(self) -> bytes:
         return json.dumps(self.documents_uuid)
 
-    def _load(raw: bytes) -> 'Folder':
+    def _load(raw: bytes) -> "Folder":
         return Folder(json.loads(raw))
+
 
 # Vault's structure, with correct types and cache sizes
 FILEKEEPER_STRUCTURE: dict[str, tuple[type, int]] = {
-    'documents': (Document, 10),
-    'folders': (Folder, 10)
+    "documents": (Document, 10),
+    "folders": (Folder, 10),
 }
+
 
 class FileKeeper:
     def __init__(self, directory: str):
@@ -59,10 +63,11 @@ class FileKeeper:
         self.folders: dict[str, int] = {}
 
         self.vault = Vault(
-            directory,             # Working directory
+            directory,  # Working directory
             FILEKEEPER_STRUCTURE,  # Vault's typed structure
-            max_memory_used = 512, # Maximum 512MB of cache
+            max_memory_used=512,  # Maximum 512MB of cache
         )
 
+
 print("Test")
-fk = FileKeeper('test-filekeeper')
+fk = FileKeeper("test-filekeeper")
