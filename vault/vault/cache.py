@@ -9,8 +9,8 @@ logger = logging.getLogger("vault/cache")
 
 ## Ticket given in order to access data managed by a Cache
 class Ticket:
-    def __init__(self, cache: Cache, data_id: int, ticket_id: int):
-        self.cache: Cache = cache
+    def __init__(self, cache: 'Cache', data_id: int, ticket_id: int):
+        self.cache: 'Cache' = cache
         self.data_id: int = data_id
         self.ticket_id: int = ticket_id
 

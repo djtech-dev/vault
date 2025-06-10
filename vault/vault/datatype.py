@@ -8,7 +8,7 @@ class Datatype:
     def _dump(self) -> bytes:
         pass
 
-    def _load(raw: bytes) -> Datatype:
+    def _load(raw: bytes) -> any:
         pass
 
 
@@ -26,7 +26,7 @@ class PickleWrapper(Wrapper):
     def _dump(self) -> bytes:
         return pickle.dumps(self.data)
 
-    def _load(raw: bytes) -> PickleWrapper:
+    def _load(raw: bytes) -> any:
         return PickleWrapper(pickle.loads(raw))
 
 
@@ -35,7 +35,7 @@ class JsonWrapper(Wrapper):
     def _dump(self) -> bytes:
         return json.dumps(self.data)
 
-    def _load(raw: bytes) -> JsonWrapper:
+    def _load(raw: bytes) -> any:
         return JsonWrapper(json.loads(raw))
 
 
@@ -46,7 +46,7 @@ class PickleDatatype(Datatype):
     def _dump(self) -> bytes:
         return pickle.dumps(self)
 
-    def _load(raw: bytes) -> PickleDatatype:
+    def _load(raw: bytes) -> any:
         return PickleDatatype(pickle.loads(raw))
 
 
@@ -55,5 +55,5 @@ class JsonDatatype(Datatype):
     def _dump(self) -> bytes:
         return json.dumps(self)
 
-    def _load(raw: bytes) -> JsonDatatype:
+    def _load(raw: bytes) -> any:
         return JsonDatatype(json.loads(raw))
