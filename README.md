@@ -26,13 +26,21 @@ Additionally, the `datatypes/` directory contains example wrappers for using Pyt
 
 ## III. Milestones
 
-A main issue with Vault is the absence of ways to scale Vaults across multiple servers: those issue will be solved with Vault 2.0, which will introduce *Scalable Storage*, *Disk Caching* and *Data Streaming*.
+## III.I. Milestones for 1.x
+
+There are 3 objectives to be met during the 1.x development cycle:  
+
+- Async I/O: All I/O operations will have an async equivalent, allowing for fully asynchronus managment of I/O tasks
+- Indexing DB: The new `IndexingEngine` class and the `vault-redis` package will allow to index files with names or tags instead of UUID and will allow for checksum testing.
+- Easy CLI: As other data storage platforms ship CLI tools to use with their service, we want to release a `vault-click` package to help developers ship custom CLI tools for their Vaults.
+
+We hope that at the end of the 1.x development cycle Vault will be a great solution for small to medium projects; for larger and more complex projects, check the milestones for the 2.0 development cycle.
+
+## III.II. Milestones for 2.0
+
+A main issue with Vault is the absence of ways to scale Vaults across multiple servers: those issue will be solved with Vault 2.0, which will introduce *Scalable Storage* (horizontal scaling), *Disk Caching* (managment of multiple copies of the same file), *Remote Channel Encryption* (use of encrypeted tunnels for communicating with remote Vaults) and *Data Streaming*.
 
 These changes are intended to support large-scale applications and will likely require breaking changes; we are planning to recieve feedback and fix bugs during the 1.0 development cycle in order to have a stable base to build upon, before starting the 2.0 development cycle.
-
-Before that, a key improvement planned for 1.x is support for *non-blocking data operations*, either through async-compatible methods for the already implement classes or async-specific variants of existing classes.
-
-A smaller improvement that could be done for programs that use large amounts of files is adding an optional feature for keeping track of files in a separate register (most likely sqlite) in order to remove the need to list all files in the directories when the Vault is loaded. This additional database could also be used to add data integrity checks (checksum).
 
 ## IV. Vault API
 
