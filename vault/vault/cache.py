@@ -60,8 +60,9 @@ class Ticket:
 ## TODO Either move FS logic to Vault or add some ways to allow the use of VaultProxy
 class Cache:
     def __init__(
-        self, unit_name: str, main_directory: str, cached_type: type, max_cached: int
+        self, vault: Vault, unit_name: str, main_directory: str, cached_type: type, max_cached: int
     ):
+        self.vault: Vault = vault
         self.unit_name: str = unit_name
         self.cached_type: type = cached_type
         self.cached_data: dict[int, cached_type] = {}
@@ -125,10 +126,9 @@ class Cache:
             self.reset()
 
     def _update(self, data_id: int):
-        file_name = "{0}/{1}/{2}.vault".format(self.directory, self.unit_name, data_id)
-        data = self.cached_data[data_id]
-        with open(file_name, "wb+") as file_obj:
-            file_obj.write(data._dump())
+        # Update using the API exposed by the Vault
+        # This is important in order to support VaultProxy
+        self.vault._update(self.unit_name, data_id, self.cached_data[data_id])
 
     def deactivate_ticket(self, ticket: Ticket):
         # Update files if auto-update is enabled or if this is the last edited Ticket.

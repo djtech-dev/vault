@@ -12,6 +12,7 @@ Vault is split into two libraries:
 
 - **`vault`** – Core data storage library, which also includes the ability to connect to remote Vaults.
 - **`vault-fastapi`** – Library for building custom servers that expose Vault storage over the network.
+- **`vault-click`** – Library for building custom CLI applications to manage Vaults. 
 
 There are also two usage examples: one for local use-cases where Vault is used within the same Python process, and one for remote use-cases where Vault is run on a separate machine.  
 
@@ -32,7 +33,6 @@ There are 3 objectives to be met during the 1.x development cycle:
 
 - Async I/O: All I/O operations will have an async equivalent, allowing for fully asynchronus managment of I/O tasks
 - Indexing DB: The new `IndexingEngine` class and the `vault-redis` package will allow to index files with names or tags instead of UUID and will allow for checksum testing.
-- Easy CLI: As other data storage platforms ship CLI tools to use with their service, we want to release a `vault-click` package to help developers ship custom CLI tools for their Vaults.
 
 We hope that at the end of the 1.x development cycle Vault will be a great solution for small to medium projects; for larger and more complex projects, check the milestones for the 2.0 development cycle.
 
