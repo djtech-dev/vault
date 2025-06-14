@@ -8,6 +8,9 @@
         Version 1 ~ 09.06.2025
          Built for Vault 1.0
       Released under MIT License
+
+This code is used both as a tutorial for Vault
+    and as a base for Vault's unit testing.
 """
 
 from vault.vault import Vault
@@ -68,6 +71,26 @@ class FileKeeper:
             max_memory_used=512,  # Maximum 512MB of cache
         )
 
+    def new_folder():
+        pass
 
-print("Test")
-fk = FileKeeper("test-filekeeper")
+    def upload_document():
+        pass
+
+    def list_folder():
+        pass
+
+    def get_document():
+        pass
+
+    def remove_folder():
+        pass
+
+    def remove_document():
+        pass
+
+    def add_to_folder():
+        pass
+
+    def remove_from_folder():
+        pass
