@@ -57,6 +57,7 @@ class Ticket:
 
 
 ## In-memory cache for a specific Datatype
+## TODO Either move FS logic to Vault or add some ways to allow the use of VaultProxy
 class Cache:
     def __init__(
         self, unit_name: str, main_directory: str, cached_type: type, max_cached: int

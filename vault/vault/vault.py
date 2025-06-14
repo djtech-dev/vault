@@ -36,16 +36,20 @@ def get_memory_used() -> int:
     proc = psutil.Process()
     return proc.memory_info().rss / 1024**2
 
+
 ## Base class for Proxies. A Proxy allows to rewrite the underlying logic of a Vault (in specific, how a Vault interacts with the filesystem and the cache).
 ## This allows to write custom connections for the Vault. (see NetworkVault for a networking proxy compatible with vault-fastapi)
 class VaultProxy:
-    def _exists(self, vault: 'Vault', unit_name: str, data_id: int) -> bool:
+    def _exists(self, vault: "Vault", unit_name: str, data_id: int) -> bool:
         pass
-    def _load(self, vault: 'Vault', unit_name: str, data_id: int) -> Optional[Ticket]:
+
+    def _load(self, vault: "Vault", unit_name: str, data_id: int) -> Optional[Ticket]:
         pass
-    def _upload(self, vault: 'Vault', unit_name: str, data: Datatype) -> int:
+
+    def _upload(self, vault: "Vault", unit_name: str, data: Datatype) -> int:
         pass
-    def _update(self, vault: 'Vault', unit_name: str, data_id: int, data: Datatype):
+
+    def _update(self, vault: "Vault", unit_name: str, data_id: int, data: Datatype):
         pass
 
 
@@ -112,7 +116,9 @@ class Vault:
                     break
 
                 # Write to file
-                file_name = "{0}/{1}/{2}.vault".format(self.directory, unit_name, data_id)
+                file_name = "{0}/{1}/{2}.vault".format(
+                    self.directory, unit_name, data_id
+                )
                 with open(file_name, "wb+") as file_obj:
                     file_obj.write(data._dump())
 
