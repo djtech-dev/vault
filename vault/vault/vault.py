@@ -36,6 +36,18 @@ def get_memory_used() -> int:
     proc = psutil.Process()
     return proc.memory_info().rss / 1024**2
 
+## Base class for Proxies. A Proxy allows to rewrite the underlying logic of a Vault (in specific, how a Vault interacts with the filesystem and the cache).
+## This allows to write custom connections for the Vault. (see NetworkVault for a networking proxy compatible with vault-fastapi)
+class VaultProxy:
+    def _exists(self, vault: 'Vault', unit_name: str, data_id: int) -> bool:
+        pass
+    def _load(self, vault: 'Vault', unit_name: str, data_id: int) -> Optional[Ticket]:
+        pass
+    def _upload(self, vault: 'Vault', unit_name: str, data: Datatype) -> int:
+        pass
+    def _update(self, vault: 'Vault', unit_name: str, data_id: int, data: Datatype):
+        pass
+
 
 ## Core object that manages all of the stored data and their relative in-memory cache.
 ## `max_memory_used` indicates the threshold amount of RAM (expressed in MBs) used by the process before the Vault requires to deallocate all in-memory caches.
@@ -45,10 +57,12 @@ class Vault:
         directory: str,
         structure: dict[str, tuple[type, int]],
         max_memory_used: int = 1000,
+        proxy: Optional[VaultProxy] = None,
     ):
         self.directory: str = directory
         self.caches: dict[str, tuple[type, Cache]] = {}
         self.max_memory_used: int = max_memory_used
+        self.proxy: Optional[VaultProxy] = proxy
 
         # Populate caches using the given structure
         for unit_name in structure.keys():
@@ -65,34 +79,46 @@ class Vault:
 
     ## Check if data exists
     def exists(self, unit_name: str, data_id: int) -> bool:
-        file_name = "{0}/{1}/{2}.vault".format(self.directory, unit_name, data_id)
-        return os.path.isfile(file_name)
+        if self.proxy:
+            # Use implementation given by the VaultProxy
+            return self.proxy._exists(self, unit_name, data_id)
+        else:
+            file_name = "{0}/{1}/{2}.vault".format(self.directory, unit_name, data_id)
+            return os.path.isfile(file_name)
 
     ## Load data from disk; it will return a Ticket usable to work with the in-memory version of the data
     def load(self, unit_name: str, data_id: int) -> Optional[Ticket]:
-        if self.exists(unit_name, data_id):
-            cache = self.caches[unit_name]
-            return cache._load(self.directory, unit_name, data_id)
+        if self.proxy:
+            # Use implementation given by the VaultProxy
+            return self.proxy._load(self, unit_name, data_id)
         else:
-            return None
+            if self.exists(unit_name, data_id):
+                cache = self.caches[unit_name]
+                return cache._load(self.directory, unit_name, data_id)
+            else:
+                return None
 
     ## Store new data to disk; it will create a new file and return its ID
     def upload(self, unit_name: str, data: Datatype) -> int:
-        # Generate a random data_id
-        data_id = 0
-        while True:
-            data_id = uuid.uuid4().int & ((1 << 63) - 1)
-            if not self.exists(unit_name, data_id):
-                break
+        if self.proxy:
+            # Use implementation given by the VaultProxy
+            return self.proxy._upload(self, unit_name, data)
+        else:
+            # Generate a random data_id
+            data_id = 0
+            while True:
+                data_id = uuid.uuid4().int & ((1 << 63) - 1)
+                if not self.exists(unit_name, data_id):
+                    break
 
-        # Write to file
-        file_name = "{0}/{1}/{2}.vault".format(self.directory, unit_name, data_id)
-        with open(file_name, "wb+") as file_obj:
-            file_obj.write(data._dump())
+                # Write to file
+                file_name = "{0}/{1}/{2}.vault".format(self.directory, unit_name, data_id)
+                with open(file_name, "wb+") as file_obj:
+                    file_obj.write(data._dump())
 
-        logger.info("New {0} element created on Vault".format(unit_name))
+                logger.info("New {0} element created on Vault".format(unit_name))
 
-        return data_id
+                return data_id
 
     ## Store new data to disk; it will create a new file and return its ID and an open Ticket
     def create(self, unit_name: str, data: Datatype) -> tuple[int, Optional[Ticket]]:
@@ -102,9 +128,13 @@ class Vault:
 
     ## Update disk version of specific modified data
     def _update(self, unit_name: str, data_id: int, data: Datatype):
-        file_name = "{0}/{1}/{2}.vault".format(self.directory, unit_name, data_id)
-        with open(file_name, "wb+") as file_obj:
-            file_obj.write(data._dump())
+        if self.proxy:
+            # Use implementation given by the VaultProxy
+            self.proxy._update(self, unit_name, data_id, data)
+        else:
+            file_name = "{0}/{1}/{2}.vault".format(self.directory, unit_name, data_id)
+            with open(file_name, "wb+") as file_obj:
+                file_obj.write(data._dump())
 
     ## Routine operation to manage in-memory cache
     def _upkeep(self):
