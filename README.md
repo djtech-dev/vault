@@ -29,7 +29,7 @@ Additionally, the `datatypes/` directory contains example wrappers for using Pyt
 
 ## III.I. Milestones for 1.x
 
-There are 3 objectives to be met during the 1.x development cycle:  
+There are two objectives to be met during the 1.x development cycle:  
 
 - Async I/O: All I/O operations will have an async equivalent, allowing for fully asynchronus managment of I/O tasks
 - Indexing DB: The new `IndexingEngine` class and the `vault-redis` package will allow to index files with names or tags instead of UUID and will allow for checksum testing.
