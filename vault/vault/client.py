@@ -12,7 +12,7 @@ class NetworkVault(VaultProxy):
         file_name = "{0}/{1}/{2}.vault".format(self.directory, unit_name, data_id)
         return os.path.isfile(file_name)
 
-    def _load(self, vault: "Vault", unit_name: str, data_id: int) -> Optional[Ticket]:
+    def _load(self, vault: "Vault", unit_name: str, data_id: int) -> Optional[bytes]:
         if self.exists(unit_name, data_id):
             cache = self.caches[unit_name]
             return cache._load(self.directory, unit_name, data_id)

@@ -87,8 +87,10 @@ class Cache:
         self.current_ticket_id: int = 0
 
     def _load(self, unit_name: str, data_id: int) -> Ticket:
-        # If data isn't loaded in memory, load it now
         if data_id not in self.cached_data.keys():
+            self.cached_data[data_id] = self.vault._load_file(self.directory, unit_name, data_id)
+
+            '''
             file_name = "{0}/{1}/{2}.vault".format(self.directory, unit_name, data_id)
 
             # Use context manager for proper file handling
@@ -96,6 +98,7 @@ class Cache:
                 data: Datatype = self.cached_type._load(file_obj.read())
 
             self.cached_data[data_id] = data
+            '''
 
         # Create Ticket and register it as open
         ticket: Ticket = Ticket(self, data_id, self.current_ticket_id)
