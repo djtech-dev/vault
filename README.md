@@ -42,6 +42,10 @@ A main issue with Vault is the absence of ways to scale Vaults across multiple s
 
 These changes are intended to support large-scale applications and will likely require breaking changes; we are planning to recieve feedback and fix bugs during the 1.0 development cycle in order to have a stable base to build upon, before starting the 2.0 development cycle.
 
+## III.III. Other ideas
+
+In the future, there might be developments for a separate Vault implementation written in Rust, with similar APIs and fully compatible with pre-existing Vaults and the Vault Remote API.
+
 ## IV. Vault API
 
 The Remote API specification for Vault 1.0 is available in [`VAULT_API.md`](./VAULT_API.md).

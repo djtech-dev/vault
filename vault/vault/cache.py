@@ -6,7 +6,6 @@ import logging
 
 logger = logging.getLogger("vault/cache")
 
-
 ## Ticket given in order to access data managed by a Cache
 class Ticket:
     def __init__(self, cache: "Cache", data_id: int, ticket_id: int):
